@@ -11,6 +11,22 @@ volumes:
 
 services:
 
+  auth-service:
+    build:
+      context: ./services/auth_service
+      dockerfile: Dockerfile
+
+    container_name: auth-service
+
+    networks:
+      - music_net
+
+    depends_on:
+      - postgres
+      - redis
+
+    restart: unless-stopped
+
   traefik:
     image: traefik:v3.0
     container_name: traefik
@@ -26,6 +42,8 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    ports:
+      - "5432:5432"
     container_name: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
